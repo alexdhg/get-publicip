@@ -1,0 +1,81 @@
+<?php
+function get_ip_address() {
+  if (!empty($_SERVER['HTTP_CLIENT_IP']) && $this->validate_ip($_SERVER['HTTP_CLIENT_IP']))
+   return $_SERVER['HTTP_CLIENT_IP'];
+
+  if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+    $iplist = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+    foreach ($iplist as $ip) {
+     if ($this->validate_ip($ip))
+      return $ip;
+    }
+   }
+
+  if (!empty($_SERVER['HTTP_X_FORWARDED']) && $this->validate_ip($_SERVER['HTTP_X_FORWARDED']))
+   return $_SERVER['HTTP_X_FORWARDED'];
+  if (!empty($_SERVER['HTTP_X_CLUSTER_CLIENT_IP']) && $this->validate_ip($_SERVER['HTTP_X_CLUSTER_CLIENT_IP']))
+   return $_SERVER['HTTP_X_CLUSTER_CLIENT_IP'];
+  if (!empty($_SERVER['HTTP_FORWARDED_FOR']) && $this->validate_ip($_SERVER['HTTP_FORWARDED_FOR']))
+   return $_SERVER['HTTP_FORWARDED_FOR'];
+  if (!empty($_SERVER['HTTP_FORWARDED']) && $this->validate_ip($_SERVER['HTTP_FORWARDED']))
+   return $_SERVER['HTTP_FORWARDED'];
+
+  // return unreliable ip since all else failed
+   return $_SERVER['REMOTE_ADDR'];
+ }
+
+function validate_ip($ip) {
+     if (filter_var($ip, FILTER_VALIDATE_IP, 
+                         FILTER_FLAG_IPV4 | 
+                         FILTER_FLAG_IPV6 |
+                         FILTER_FLAG_NO_PRIV_RANGE | 
+                         FILTER_FLAG_NO_RES_RANGE) === false)
+         return false;
+     self::$ip = $ip;
+     return true;
+ }
+?>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>protocol1337.github.io</title>
+<link href='//fonts.googleapis.com/css?family=Lato:100' rel='stylesheet' type='text/css'>
+<style>
+			body {
+				margin: 0;
+				padding: 0;
+				width: 100%;
+				height: 100%;
+				color: #B0BEC5;
+				display: table;
+				font-weight: 100;
+				font-family: 'Lato';
+			}
+
+			.container {
+				text-align: center;
+				display: table-cell;
+				vertical-align: middle;
+			}
+
+			.content {
+				text-align: center;
+				display: inline-block;
+			}
+
+			.title {
+				font-size: 72px;
+				margin-bottom: 40px;
+			}
+		</style>
+</head>
+<body>
+<div class="container">
+<div class="content">
+<div class="title">
+  echo $_SERVER["REMOTE_ADDR"];
+</div>
+</div>
+</div>
+</body>
+</html>
